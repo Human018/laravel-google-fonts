@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Blade;
 use Spatie\GoogleFonts\Commands\FetchGoogleFontsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Tuxedo\App\Utilities\FontHelper;
 
 class GoogleFontsServiceProvider extends PackageServiceProvider
 {
@@ -22,13 +23,14 @@ class GoogleFontsServiceProvider extends PackageServiceProvider
     public function packageRegistered()
     {
         $this->app->singleton(GoogleFonts::class, function (Application $app) {
+            $fonts = FontHelper::fontArray();
             return new GoogleFonts(
                 filesystem: $app->make(FilesystemManager::class)->disk(config('google-fonts.disk')),
                 path: config('google-fonts.path'),
                 inline: config('google-fonts.inline'),
                 fallback: config('google-fonts.fallback'),
                 userAgent: config('google-fonts.user_agent'),
-                fonts: config('google-fonts.fonts'),
+                fonts: $fonts,
                 preload: config('google-fonts.preload', false),
             );
         });
